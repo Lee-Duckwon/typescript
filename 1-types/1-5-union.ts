@@ -16,10 +16,12 @@
     };
   };
   type Fail = {
-    body: string;
+    reason: string;
   };
   // 위와 같이 정해주고 함수에 대입해서 사용한다.
-  function signup(): Success | Fail {
+  type SignupState = Success | Fail;
+
+  function signup1(): SignupState {
     return {
       response: {
         body: 'signup !'
@@ -27,12 +29,11 @@
     };
   }
   // 위와 같이 할 수 있지만 아래처럼 깔끔하게 작성한다.
-  type SignupState = Success | Fail;
-  function signup2(): SignupState {
-    return {
-      response: {
-        body: 'love'
-      }
-    };
+  function printSignup(state: SignupState) {
+    if ('response' in state) {
+      console.log(state.response.body);
+    } else {
+      console.log(state.reason);
+    }
   }
 }
