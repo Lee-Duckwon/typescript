@@ -11,7 +11,7 @@
 
   // * undefined
   // 아직 결정 x
-  let name: undefined; // 0 단독적으로 쓰지는 않는다
+  let name: undefined; // x  단독적으로 쓰지는 않는다
   let age: number | undefined;
   age = 5;
   age = undefined;
