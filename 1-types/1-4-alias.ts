@@ -1,9 +1,9 @@
 {
-  // Type aliase 는 말 그대로 새로운 타입을 정의
+  // * Type aliase 는 말 그대로 새로운 타입을 정의
 
   type Text = string;
-  const name: Text = 'ellie';
-  //문자열만
+  const name: Text = 'ellie'; //문자열만 가능
+
   type Num = number;
   type Student = {
     name: string;
