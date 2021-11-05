@@ -16,12 +16,12 @@
   print('he');
 
   //? 2. 함수 리턴값 추론
-  function add(x: number, y: number) {
+  function addFunc(x: number, y: number) {
     return x + y;
     // -> 리턴 값은 숫자겠군?! 자동으로 추론
     // -> 원래는 function add(x: number, y: number): number{}
   }
-  const result = add(7, 1);
+  const result = addFunc(7, 1);
   // * result는 자동으로 const result: number 가 된다
 
   //  이러한 모든 것이 타입 추론이다.
