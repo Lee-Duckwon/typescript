@@ -28,13 +28,13 @@
   }
   // 함수의 반환 number or undefined
 
-  // * unknown
+  // * unknown 💩
   // 좋지 않음
   let notSure: unknown = 0;
   notSure = 'Do';
   notSure = true;
 
-  // * any
+  // * any 💩
   // 좋지 않음
   let anything: any = 0;
   anything = 'Hello';

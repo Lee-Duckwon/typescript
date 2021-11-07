@@ -2,13 +2,6 @@
  * Let's make a calculator 🧮
  */
 
-// * 아래는 함수를 호출하여 올바른 결과 값을 불러오는지 체크
-console.log(calculate('add', 1, 3)); // 4
-console.log(calculate('substract', 3, 1)); // 2
-console.log(calculate('multiply', 4, 2)); // 8
-console.log(calculate('divide', 4, 2)); // 2
-console.log(calculate('remainder', 5, 2)); // 1
-
 type Command = 'add' | 'substract' | 'multiply' | 'divide' | 'remainder';
 function calculate(
   command: Command,
@@ -30,3 +23,9 @@ function calculate(
       throw Error('unknown command');
   }
 }
+// * 아래는 함수를 호출하여 올바른 결과 값을 불러오는지 체크
+console.log(calculate('add', 1, 3)); // 4
+console.log(calculate('substract', 3, 1)); // 2
+console.log(calculate('multiply', 4, 2)); // 8
+console.log(calculate('divide', 4, 2)); // 2
+console.log(calculate('remainder', 5, 2)); // 1
