@@ -8,7 +8,7 @@ const position = {
 
 type Moving = 'up' | 'down' | 'left' | 'right';
 
-function move(move: Moving) {
+function moveGame(move: Moving) {
   switch (move) {
     case 'up':
       position.y++;
@@ -27,11 +27,11 @@ function move(move: Moving) {
   }
 }
 console.log(position); // { x: 0, y: 0}
-move('up');
+moveGame('up');
 console.log(position); // { x: 0, y: 1}
-move('down');
+moveGame('down');
 console.log(position); // { x: 0, y: 0}
-move('left');
+moveGame('left');
 console.log(position); // { x: -1, y: 0}
-move('right');
+moveGame('right');
 console.log(position); // { x: 0, y: 0}

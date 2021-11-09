@@ -1,5 +1,3 @@
-import { ENUM } from 'sequelize/types';
-
 {
   // * enum 상수 묶음 정의
   // 자바스크립트는 그런 타입이 없다.
