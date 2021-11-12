@@ -1,3 +1,5 @@
+import { AggregateError } from 'sequelize/types';
+
 {
   // public, private, protected
 
@@ -67,4 +69,71 @@
 
   maker.fillCoffeeBeans(50);
   //maker.coffeeBeans = 30 이런 것이 더 이상 불가능하다.
+}
+// Getter와 Setter에 대해서 알아보기 위해 아래 객체를 하나 더 만들었다.
+// Getter Setter는 일반 변수처럼 사용이 가능하지만, 어떤 계산을 해야 할 때 유용하게 사용 할 수 있다.
+{
+  class User {
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    constructor(firstName: string, lastName: string) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.fullName = `${firstName} ${lastName}`;
+    }
+    private internalAge = 4;
+    // 특정 변수(internalAge)를 프라이빗하게 두고 게터와 세터를 이용하여 변경한다.
+
+    get age(): number {
+      return this.internalAge;
+    }
+    // 외부에서 바로 User.internalAge = 10이런식으로 변경 할 수 없게 하고
+    // User.age = 10; 이런식으로 변경하게 유도하는 것이다.
+    // 지금 작성한 것은 굉장히 단순해서 필요성이 약해보이지만
+    // getter setter를 이용하면 다양한 연산을 할 수 있다.
+    // 또한, setter 안에서 유효성검사를 해서 올바른 number가 들어오는지 체크할 수 있다.
+    set age(num: number) {
+      this.internalAge = num;
+    }
+  } // ? 클래스 끝
+  const user = new User('Steve', 'Jobs');
+  console.log(user);
+  // 여기까지 작성하면 아래처럼 잘 뜬다.
+  // User { firstName: 'Steve', lastName: 'Jobs', fullName: 'Steve Jobs' }
+
+  // 그런데 여기서 firstName을 바꾸고 싶다.
+  user.firstName = 'Choi';
+  console.log(user);
+  // console.log(user); 하면?
+  //* 똑같이 스티브 잡스가 뜬다.
+  // 이것은 한 번 할당되면 계속 지정되기 때문이다.
+  // 이럴 때 Getter가 유용하다
+
+  //* fullName: string을 ->
+  //*  get fullName(): string {
+  //*    return `${firstName} ${lastName}`;
+  //*  }
+  //로 작성해준다. 그리고 접근할 때는 똑같이 접근한다(함수형태로 접근하지 않는다)
+
+  //!여기서 외부에서 변경 불가능하게 하려면 private을 준다
+  /* // * 아래 두개는 같은 코드로 볼 수 있다. 하지만 후자가 훨씬 간결하다.
+  class User {
+    private firstName: string;
+    private lastName: string;
+    get fullName(): string {
+      return `${this.firstName} ${this.lastName}`;
+    }
+    constructor(firstName: string, lastName: string) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+    }
+  }
+  class User {
+    get fullName(): string {
+      return `${this.firstName} ${this.lastName}`;
+    }
+    constructor(private firstName: string, private lastName: string) {
+    }
+  }*/
 }

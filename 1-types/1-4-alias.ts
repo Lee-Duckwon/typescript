@@ -1,5 +1,5 @@
 {
-  // * Type aliase 는 말 그대로 새로운 타입을 정의
+  // * Type alias는 말 그대로 새로운 타입을 정의하는 것이다.
 
   type Text = string;
   const name: Text = 'ellie'; //문자열만 가능
