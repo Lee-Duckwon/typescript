@@ -1,5 +1,3 @@
-import { AggregateError } from 'sequelize/types';
-
 {
   // public, private, protected
 
