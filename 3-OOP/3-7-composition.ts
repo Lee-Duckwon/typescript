@@ -9,7 +9,7 @@
   // 또한, Typescript에서는 한 가지 이상의 부모 Class를 상속할 수 없다. (extends a, b 불가능)
 
   //* 이런 상속의 문제점들 때문에 COMPOSITIOn을 사용한다.
-  // Composition ??
+  // ?? Composition ??
   // 구성요소들, 구성이라는 뜻으로
   // 레고를 만들 때처럼 필요한 것들을 하나 둘 가져와서 조립해 나가는 것을 말한다.
   // 무조건 상속이 나쁜 것은 아니지만,  너무 깊이있게 수직적으로 쭉쭉 가다보면 복잡하다.
@@ -28,6 +28,7 @@
     addSugar(cup: CoffeeCup): CoffeeCup;
   }
 
+  // 싸구려 우유 거품기
   class CheapMilkSteamer implements MilkFrother {
     makeMilk(cup: CoffeeCup): CoffeeCup {
       console.log(`Steaming some milk🥛...`);
@@ -47,9 +48,14 @@
       };
     }
   }
-
+  //설탕 제조기
   class AutomaticSugarMixer implements SugarSource {
+    /*
+    private getSuger() {
+      console.log('Gettin some sugar from candy');
+    }*/
     addSugar(cuppa: CoffeeCup): CoffeeCup {
+      // 설탕 넣고 커피컵을 리턴
       console.log(`Adding sugar...`);
       return {
         ...cuppa,
@@ -113,7 +119,11 @@
   }
 
   class CaffeLatteMachine extends CoffeeMachine {
-    constructor(beans: number, public readonly serialNumber: string) {
+    constructor(
+      beans: number,
+      public readonly serialNumber: string,
+      private milkFother: CheapMilkSteamer
+    ) {
       super(beans);
     }
     private steamMilk(): void {
@@ -143,6 +153,7 @@
   }
 
   class SweetCaffeLatteMachine extends CoffeeMachine {
+    // 우유, 설탕 만드는 과정을 신경쓰지 않는다.
     constructor(
       beans: number,
       private sugar: SugarSource,
@@ -162,4 +173,7 @@
     new FancyMilkSteamer()
   );
   machine.makeCoffee(2);
+
+  //클래스와 클래스들 간에 서로 잘 알고 지내는 것은 좋지 않다.
+  // 커플링은 피해야 한다.
 }
