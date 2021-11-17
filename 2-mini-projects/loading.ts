@@ -23,7 +23,7 @@
   const printLoginState = (ele: ResourceLoadState) => {
     switch (ele.state) {
       case 'loading':
-        console.log('👀 loading...');
+        console.log(`👀 ${ele.state}`);
         break;
       case 'success':
         console.log(`😃 ${ele.response.body}`);
@@ -35,7 +35,7 @@
         throw Error(`unknown state ${ele}`);
     }
   };
-  printLoginState({ state: 'loading' }); // 👀 loading...
+  printLoginState({ state: 'loading' }); // 👀 loading
   printLoginState({ state: 'success', response: { body: 'loaded' } }); // 😃 loaded
   printLoginState({ state: 'fail', reason: 'no network' }); // 😱 no network
 }
