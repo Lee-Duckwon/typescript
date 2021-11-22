@@ -32,6 +32,7 @@ type StackNode = {
 };
 
 class StackImpl implements Stack {
+  constructor(private capacity: number) {}
   private _size: number = 0; //readOnly로 해야 외부에서 사이즈 정보를 변경할 수 없어야 한다.
   // *그러나 그냥 readOnly를  붙이면 내부에서도 변경 불가하기 때문에 private을 주고
   // 동일한 이름이므로 언더바
@@ -44,6 +45,9 @@ class StackImpl implements Stack {
   //* StackNode를 가리킬수도 안 가리킬수도 있다. 즉, Stack은 head를 가질 수도 있고 안 가질 수도 있다.
 
   push(value: string) {
+    if (this.size === this.capacity) {
+      throw new Error('Stack is full!');
+    }
     const node: StackNode = {
       // push니까 노드 생성
       // ?head는 새로운 노드를 가리키고
@@ -83,7 +87,7 @@ class StackImpl implements Stack {
 
 // TEST 코드
 
-const stack = new StackImpl();
+const stack = new StackImpl(10);
 stack.push('SOLID 1');
 stack.push('TANIA 2');
 stack.push('STEVE 3');
