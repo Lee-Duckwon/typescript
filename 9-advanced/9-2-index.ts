@@ -1,4 +1,5 @@
 {
+  //* index타입 //
   const obj = {
     name: 'Tania'
   };
