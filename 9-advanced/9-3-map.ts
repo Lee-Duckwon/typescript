@@ -1,4 +1,5 @@
 {
+  //* map타입 //
   type Video = {
     title: string;
     author: string;
