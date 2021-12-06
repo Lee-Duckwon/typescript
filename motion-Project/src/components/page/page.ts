@@ -1,6 +1,7 @@
 export class PageComponent {
   // 외부에서 PageComponent 만들어서 필요한 곳에 추가하는 기능
   private element: HTMLUListElement;
+  // element는 dom요소중 하나
   constructor() {
     // ul 엘리먼트 바로 생성
     this.element = document.createElement('ul');
