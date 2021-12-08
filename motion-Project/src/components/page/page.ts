@@ -1,4 +1,4 @@
-import { BaseComponent } from './../component';
+import { BaseComponent } from './../component.js';
 
 export class PageComponent extends BaseComponent<HTMLUListElement> {
   // 외부에서 PageComponent 만들어서 필요한 곳에 추가하는 기능
