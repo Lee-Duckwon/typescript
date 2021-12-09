@@ -2,6 +2,7 @@ import { ImageComponent } from './components/page/item/image.js';
 import { NoteComponent } from './components/page/item/note.js';
 import { TodoComponent } from './components/page/item/todo.js';
 import { PageComponent } from './components/page/page.js';
+import { VideoComponent } from './components/page/item/video.js';
 class App {
   //
   private readonly page: PageComponent;
@@ -22,6 +23,12 @@ class App {
 
     const todo = new TodoComponent('Todo Title', 'Todo Item');
     todo.attachTo(appRoot, 'beforeend');
+
+    const video = new VideoComponent(
+      '이루마 피아노곡',
+      'https://youtu.be/5vO5HuphDnM'
+    );
+    video.attachTo(appRoot, 'beforeend');
   }
 }
 
