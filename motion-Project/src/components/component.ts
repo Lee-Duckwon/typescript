@@ -1,5 +1,6 @@
 export interface Component {
   attachTo(parent: HTMLElement, position?: InsertPosition): void;
+  removeFrom(parent: HTMLElement): void;
 }
 
 export class BaseComponent<T extends HTMLElement> implements Component {
@@ -16,6 +17,12 @@ export class BaseComponent<T extends HTMLElement> implements Component {
   attachTo(parent: HTMLElement, position: InsertPosition = 'afterbegin') {
     // BaseComponent를 만드는 애들은 모두 attachTo 사용 가능
     parent.insertAdjacentElement(position, this.element);
+  }
+  removeFrom(parent: HTMLElement) {
+    if (parent !== this.element.parentElement) {
+      throw new Error('Parent mismatch! Plz confirm..');
+    }
+    parent.removeChild(this.element);
   }
   //* BaseComponet는 캡슐화 한다.
   //* 1. HTML Element를 만드는 것을 캡슐화한다-> 외부에서는 어떻게 만드는지 신경쓰지 않고 그냥 string타입으로 전달하면 element를 만든다.
