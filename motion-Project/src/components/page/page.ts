@@ -6,9 +6,14 @@ export interface Composable {
 }
 
 type OnCloseListener = () => void;
-class PageItemComponent
+
+interface SectionContainer extends Component, Composable {
+  setOnCloseListener(listener: OnCloseListener): void;
+  // setOnCloseListener api가 있어야함!
+}
+export class PageItemComponent
   extends BaseComponent<HTMLElement>
-  implements Composable
+  implements SectionContainer
 {
   private closeListener?: OnCloseListener;
   constructor() {
@@ -34,7 +39,13 @@ class PageItemComponent
     this.closeListener = listener;
   }
 }
+//* --- //
 
+type SectionContainerConstructor = {
+  //아무 것도 전달 받지 않은 생성자
+  new (): SectionContainer;
+  // 생성자는 아무것도 받지않지만 호출되면 SectionContainer라는 규격을 따라가는 어떤 class라도 ok
+};
 export class PageComponent
   extends BaseComponent<HTMLUListElement>
   implements Composable
@@ -42,7 +53,10 @@ export class PageComponent
   // 외부에서 PageComponent 만들어서 필요한 곳에 추가하는 기능
   //private element: HTMLUListElement;
   // element는 dom요소중 하나
-  constructor() {
+  constructor(private pageItemConstructor: SectionContainerConstructor) {
+    // SectionContainerConstructor를 외부로부터 받아서
+    //받아진 아이템을 이용해서 내부에서 한 가지클래스를 만드는 것이 아니라 외부에서 전달 된 pageItemConstructor를 이용해서 만들 수 있다.
+
     // ul 엘리먼트 바로 생성
     /*this.element = document.createElement('ul');
     this.element.setAttribute('class', 'page'); // class 이름 page로 지정
@@ -52,6 +66,7 @@ export class PageComponent
   }
   addChild(section: Component) {
     const item = new PageItemComponent(); // item 생성
+    // Page를 계속 새로 만드는데 재사용 가능하려면?
     item.addChild(section);
     item.attachTo(this.element, 'beforeend');
     item.setOnCloseListener(() => {
