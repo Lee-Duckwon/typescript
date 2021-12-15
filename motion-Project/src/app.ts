@@ -9,47 +9,70 @@ import {
 import { VideoComponent } from './components/page/item/video.js';
 import { Component } from './components/component.js';
 import { InputDialog } from './components/dialog/dialog.js';
+import { MediaSectionInput } from './components/dialog/input/media-input.js';
+import { TextSectionInput } from './components/dialog/input/text-input.js';
 class App {
   //
   private readonly page: Component & Composable;
 
-  constructor(appRoot: HTMLElement) {
+  constructor(appRoot: HTMLElement, dialogRoot: HTMLElement) {
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
     // 페이지 우리가 어디에 붙을거나면 -> appRoot에 너 자신을 추가해줘
 
-    const image = new ImageComponent(
-      'Image Title',
-      'https://picsum.photos/600/300'
-    );
-    this.page.addChild(image); // 이미지 컴포넌트 추가해줘 !
-
-    const note = new NoteComponent('Note Title', 'Note Body');
-    this.page.addChild(note);
-
-    const todo = new TodoComponent('Todo Title', 'Todo Item');
-    this.page.addChild(todo);
-
-    const video = new VideoComponent(
-      '이루마 피아노곡',
-      'https://youtu.be/5vO5HuphDnM'
-    );
-    this.page.addChild(video);
-    const imageBtn = document.querySelector('#new-image')! as HTMLButtonElement;
-    imageBtn.addEventListener('click', () => {
+    const videoBtn = document.querySelector('#new-image')! as HTMLButtonElement;
+    videoBtn.addEventListener('click', () => {
       const dialog = new InputDialog();
+      const inputSection = new MediaSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
 
       dialog.setOnCloseListenr(() => {
-        dialog.removeFrom(document.body);
+        dialog.removeFrom(dialogRoot);
       });
 
       dialog.setOnSubmitListenr(() => {
         //섹션을 만들어서 페이지에 추가한다.
-        dialog.removeFrom(document.body);
+        const image = new VideoComponent(inputSection.title, inputSection.url);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
+      });
+    });
+    const noteBtn = document.querySelector('#new-note')! as HTMLButtonElement;
+    noteBtn.addEventListener('click', () => {
+      const dialog = new InputDialog();
+      const inputSection = new TextSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
+
+      dialog.setOnCloseListenr(() => {
+        dialog.removeFrom(dialogRoot);
+      });
+      dialog.setOnSubmitListenr(() => {
+        const image = new NoteComponent(inputSection.title, inputSection.body);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
+      });
+    });
+
+    const todoBtn = document.querySelector('#new-todo')! as HTMLButtonElement;
+    todoBtn.addEventListener('click', () => {
+      const dialog = new InputDialog();
+      const inputSection = new TextSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
+
+      dialog.setOnCloseListenr(() => {
+        dialog.removeFrom(dialogRoot);
+      });
+      dialog.setOnSubmitListenr(() => {
+        const image = new TodoComponent(inputSection.title, inputSection.body);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
       });
     });
   }
 }
 
 // 어플리케이션 시작 되면 document 클래스를 가진 요소를 가져와서 전달 _header와 footer 사이에 전달할 요소_
-new App(document.querySelector('.document')! as HTMLElement); // * 무조건 null 아니야 ! -> !
+new App(document.querySelector('.document')! as HTMLElement, document.body); // * 무조건 null 아니야 ! -> !
