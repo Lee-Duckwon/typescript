@@ -17,7 +17,8 @@ import {
 } from './components/dialog/dialog.js';
 
 type InputComponentConstructor<T = (MediaData | TextData) & Component> = {
-  // * T라는 것은 MediaData 이거나 TextData가 될 것이다.
+  // 정확한 유격을 받는 것이 아니라 이중 하나만 되고 반드시 Component 인터페이스를 규현해야 한다. &
+  // * T라는 것은 MediaData 이거나 TextData가 될 것이다. 그리고 꼭!(&) Component 인터페이스를 구현해야한다!
   new (): T;
 };
 class App {
@@ -33,59 +34,25 @@ class App {
       MediaSectionInput,
       (input: MediaSectionInput) => new ImageComponent(input.title, input.url)
     );
-    const videoBtn = document.querySelector('#new-image')! as HTMLButtonElement;
-    videoBtn.addEventListener('click', () => {
-      const dialog = new InputDialog();
-      const inputSection = new MediaSectionInput();
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
+    this.bindElementToDialog<MediaSectionInput>(
+      '#new-video',
+      MediaSectionInput,
+      (input: MediaSectionInput) => new VideoComponent(input.title, input.url)
+    );
 
-      dialog.setOnCloseListenr(() => {
-        dialog.removeFrom(dialogRoot);
-      });
+    this.bindElementToDialog<TextSectionInput>(
+      '#new-note',
+      TextSectionInput,
+      (input: TextSectionInput) => new NoteComponent(input.title, input.body)
+    );
 
-      dialog.setOnSubmitListenr(() => {
-        //섹션을 만들어서 페이지에 추가한다.
-        const image = new VideoComponent(inputSection.title, inputSection.url);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
-    const noteBtn = document.querySelector('#new-note')! as HTMLButtonElement;
-    noteBtn.addEventListener('click', () => {
-      const dialog = new InputDialog();
-      const inputSection = new TextSectionInput();
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListenr(() => {
-        dialog.removeFrom(dialogRoot);
-      });
-      dialog.setOnSubmitListenr(() => {
-        const image = new NoteComponent(inputSection.title, inputSection.body);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
-
-    const todoBtn = document.querySelector('#new-todo')! as HTMLButtonElement;
-    todoBtn.addEventListener('click', () => {
-      const dialog = new InputDialog();
-      const inputSection = new TextSectionInput();
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListenr(() => {
-        dialog.removeFrom(dialogRoot);
-      });
-      dialog.setOnSubmitListenr(() => {
-        const image = new TodoComponent(inputSection.title, inputSection.body);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
+    this.bindElementToDialog<TextSectionInput>(
+      '#new-todo',
+      TextSectionInput,
+      (input: TextSectionInput) => new TodoComponent(input.title, input.body)
+    );
   }
-  private bindElementToDialog<T extends (MediaData | TextData) & Component>(
+  private bindElementToDialog<T extends (MediaData | TextData) & Component>( // 굳이 커플링 하고 싶지 않다면 MediaData | TextData를 구현하고 있고 & Component형태의 아이만을 받는다... 이런 규격사항을 만족하면 받아주는 것
     // dialog 연결해주고 동적으로 요소를 페이지에 추가해주는 것을 함
     // Element와 dialog를 연결해주는 역할
     selector: string,
