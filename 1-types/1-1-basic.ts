@@ -43,12 +43,12 @@
   // void 생략하는 곳도 있음
   function print(): void {
     console.log('hello');
-    return; // 생략
+    return; // 생략과 return;은 같다.
   }
   let unusable: void = undefined; // 💩
 
   // * never
-  // 어떤 에러를 던질 때, -> 리턴이 없는 경우를 명시하기 위해
+  // 어떤 에러를 던질 때, -> 리턴이 없는 경우를 명시하기 위해 주로 throw new Error랑 같이 쓰임
   function throwError(message: string): never {
     // message -> server (log), or
 

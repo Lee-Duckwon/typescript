@@ -7,13 +7,13 @@ type OnSubmitListener = () => void;
 export interface MediaData {
   readonly title: string;
   readonly url: string;
+  // interface readnonly를 꼭 갖고있어야 한다고 규격을 세우고
 }
 
 export interface TextData {
   readonly title: string;
   readonly body: string;
 }
-
 export class InputDialog
   extends BaseComponent<HTMLElement>
   implements Composable

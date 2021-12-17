@@ -29,3 +29,36 @@
   //  다만 원시타입 경우 (let text = 'hello') 같은 경우에는 생략하기도 하지만 명확하게 명시하자 특히 함수 리턴값!
   //* 팀 프로젝트 시에 가독성을 생각해서 일관성 있게 어떠한 경우만 생략 가능한지 미리 정하고 하자
 }
+// 함수
+interface Add {
+  (num1: number, num2: number): number;
+}
+const add: Add = function (x, y) {
+  // * 여기서는 왜 타입을 설정 안 해줘도 number라고 뜨는가?? interface에서 num1에 이미 number라고 설정해줬기 때문에
+  return x + y;
+};
+
+interface IsAdult {
+  (age: number): boolean;
+}
+const isAdult: IsAdult = (age) => {
+  return age > 19;
+};
+
+// - interface 확장 - // extends
+interface Car {
+  color: string;
+  wheels: number;
+}
+interface Benz extends Car {
+  //Car에 추가로 stop메소드
+  stop(): void;
+}
+
+const benz: Benz = {
+  color: 'red',
+  wheels: 5,
+  stop() {
+    console.log('Audi');
+  }
+};
