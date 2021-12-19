@@ -17,7 +17,8 @@ export class PageItemComponent
 {
   private closeListener?: OnCloseListener;
   constructor() {
-    super(`<li class="page-item">
+    //draggable="true" -> 드레그가 허용 됨 (드래그 스타트)
+    super(`<li draggable="true" class="page-item">
               <section class="page-item__body"></section>
               <div class="page-item__controls">
                 <button class="close">&times;</button>
@@ -28,6 +29,20 @@ export class PageItemComponent
       this.closeListener && this.closeListener();
     };
     //? button 클릭이 되면 해당 페이지 아이템 컴포넌트 삭제
+
+    this.element.addEventListener('dragstart', (event: DragEvent) => {
+      this.onDragStart(event);
+    });
+    this.element.addEventListener('dragend', (event: DragEvent) => {
+      this.onDragEnd(event);
+    });
+  }
+  onDragStart(event: DragEvent) {
+    console.log('drag', event);
+    //ClientX, Y좌표 확인 가능
+  }
+  onDragEnd(event: DragEvent) {
+    console.log('drag', event);
   }
   addChild(child: Component) {
     const container = this.element.querySelector(
@@ -63,7 +78,26 @@ export class PageComponent
     this.element.textContent = 'This is PageComponent'; // 말그대로 textContent */
 
     super('<ul class="page"></ul>');
+    this.element.addEventListener('dragover', (event: DragEvent) => {
+      this.onDragOver(event);
+    });
+    this.element.addEventListener('drop', (event: DragEvent) => {
+      this.onDrop(event);
+    });
   }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    // 드랍존 정의할 때 preventDefault해줘야 한다.
+    // DragOver 와 Drop을 핸들링할때 안 해주면 touchEvent나 포인터 이벤트에서 안 좋은 결과를 발생할 수도 있어
+    // 이런 것을 보면 지금 구현하는 드래그 앤 드랍은 안 좋은 api
+    console.log('onDragOver');
+  }
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    console.log('onDrop');
+  }
+
   addChild(section: Component) {
     const item = new PageItemComponent(); // item 생성
     // Page를 계속 새로 만드는데 재사용 가능하려면?
