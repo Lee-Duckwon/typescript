@@ -6,16 +6,30 @@ export interface Composable {
 }
 
 type OnCloseListener = () => void;
+type DragState = 'start' | 'stop' | 'enter' | 'leave'; //드래그는 4가지의 상태
+type OnDragStateListener<T extends Component> = (
+  target: T,
+  state: DragState
+) => void; // 타입이 안전하지만 타입이 보존되는 제네릭
 
 interface SectionContainer extends Component, Composable {
   setOnCloseListener(listener: OnCloseListener): void;
   // setOnCloseListener api가 있어야함!
+
+  setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
 }
+
+type SectionContainer = {
+  new (): SectionContainer;
+};
+
 export class PageItemComponent
   extends BaseComponent<HTMLElement>
   implements SectionContainer
 {
   private closeListener?: OnCloseListener;
+  private dragStateListener?: OnDragStateListener<PageItemComponent>; // 다른 컴포넌트에서 동일한 listener를 쓰고 싶다면 타입만 바꿔서 재사용 가능
+
   constructor() {
     //draggable="true" -> 드레그가 허용 됨 (드래그 스타트)
     super(`<li draggable="true" class="page-item">
@@ -36,13 +50,30 @@ export class PageItemComponent
     this.element.addEventListener('dragend', (event: DragEvent) => {
       this.onDragEnd(event);
     });
+    this.element.addEventListener('dragenter', (event: DragEvent) => {
+      this.onDragEnter(event);
+    });
+    this.element.addEventListener('dragleave', (event: DragEvent) => {
+      this.onDragLeave(event);
+    });
   }
-  onDragStart(event: DragEvent) {
-    console.log('drag', event);
+  onDragStart(_: DragEvent) {
+    this.notifyDragObservers('start');
     //ClientX, Y좌표 확인 가능
   }
-  onDragEnd(event: DragEvent) {
-    console.log('drag', event);
+  onDragEnd(_: DragEvent) {
+    this.notifyDragObservers('stop');
+  }
+  onDragEnter(_: DragEvent) {
+    this.notifyDragObservers('enter');
+    //ClientX, Y좌표 확인 가능
+  }
+  onDragLeave(_: DragEvent) {
+    this.notifyDragObservers('leave');
+  }
+  notifyDragObservers(state: DragState) {
+    // 유지보수때문에 함수로 관리
+    this.dragStateListener && this.dragStateListener(this, state);
   }
   addChild(child: Component) {
     const container = this.element.querySelector(
@@ -52,6 +83,11 @@ export class PageItemComponent
   }
   setOnCloseListener(listener: OnCloseListener) {
     this.closeListener = listener;
+  }
+  setOnDragStateListner(listener: OnDragStateListener<PageItemComponent>) {
+    // 나 드래그 되고 있어 !
+    // 나, 드래그 상태
+    this.dragStateListener = listener;
   }
 }
 //* --- //
@@ -107,6 +143,10 @@ export class PageComponent
       item.removeFrom(this.element);
     });
     // 들어오는 섹션이 뭔지 잘 모르지만 무조건 페이지 아이템을 만들어서 전달받은 섹션을 추가해서 받은 다음에 페이지 아이템을 페이지에 넣는다
+
+    item.setOnDragStateListner((target: SectionContainer, state: DragState) => {
+      console.log(target, state);
+    });
   }
   /*
   attachTo(parent: HTMLElement, position: InsertPosition = 'afterbegin') {
