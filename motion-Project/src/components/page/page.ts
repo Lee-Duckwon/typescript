@@ -15,13 +15,12 @@ type OnDragStateListener<T extends Component> = (
 interface SectionContainer extends Component, Composable {
   setOnCloseListener(listener: OnCloseListener): void;
   // setOnCloseListener api가 있어야함!
-
   setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
+  muteChildren(state: 'mute' | 'unmute'): void;
 }
-
-type SectionContainer = {
-  new (): SectionContainer;
-};
+// type SectionContainerConstructor = {
+//   new (): SectionContainer;
+// }
 
 export class PageItemComponent
   extends BaseComponent<HTMLElement>
@@ -89,6 +88,13 @@ export class PageItemComponent
     // 나, 드래그 상태
     this.dragStateListener = listener;
   }
+  muteChildren(state: 'mute' | 'unmute') {
+    if (state === 'mute') {
+      this.element.classList.add('mute-children');
+    } else {
+      this.element.classList.remove('mute-children');
+    }
+  }
 }
 //* --- //
 
@@ -101,6 +107,9 @@ export class PageComponent
   extends BaseComponent<HTMLUListElement>
   implements Composable
 {
+  private children = new Set<SectionContainer>();
+  private dropTarget?: SectionContainer;
+  private dragTarget?: SectionContainer;
   // 외부에서 PageComponent 만들어서 필요한 곳에 추가하는 기능
   //private element: HTMLUListElement;
   // element는 dom요소중 하나
@@ -132,6 +141,15 @@ export class PageComponent
   onDrop(event: DragEvent) {
     event.preventDefault();
     console.log('onDrop');
+    // 위치 변경
+    if (!this.dropTarget) {
+      return;
+    }
+    if (this.dragTarget && this.dragTarget !== this.dropTarget) {
+      this.dragTarget.removeFrom(this.element);
+      //this.element == 페이지
+      this.dropTarget.attach(this.dragTarget, 'beforebegin');
+    }
   }
 
   addChild(section: Component) {
@@ -141,11 +159,35 @@ export class PageComponent
     item.attachTo(this.element, 'beforeend');
     item.setOnCloseListener(() => {
       item.removeFrom(this.element);
+      this.children.delete(item);
     });
+    this.children.add(item);
     // 들어오는 섹션이 뭔지 잘 모르지만 무조건 페이지 아이템을 만들어서 전달받은 섹션을 추가해서 받은 다음에 페이지 아이템을 페이지에 넣는다
 
     item.setOnDragStateListner((target: SectionContainer, state: DragState) => {
-      console.log(target, state);
+      switch (state) {
+        case 'start':
+          this.dragTarget = target;
+          this.updateSections('mute');
+          break;
+        case 'stop':
+          this.dragTarget = undefined;
+          this.updateSections('unmute');
+          break;
+        case 'enter':
+          this.dropTarget = target;
+          break;
+        case 'leave':
+          this.dropTarget = undefined;
+          break;
+        default:
+          throw new Error(`유효하지 않은 상태${state}`);
+      }
+    });
+  }
+  private updateSections(state: 'mute' | 'unmute') {
+    this.children.forEach((section: SectionContainer) => {
+      section.muteChildren(state);
     });
   }
   /*
