@@ -249,3 +249,8 @@ body {
   padding: 1em;
   color: var(--smokywhite);
 }
+
+/* 드래그앤 드랍*/
+.mute-children * {
+  pointer-events: none;
+}
