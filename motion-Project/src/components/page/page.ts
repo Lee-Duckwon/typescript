@@ -18,7 +18,13 @@ interface SectionContainer extends Component, Composable {
   setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
   muteChildren(state: 'mute' | 'unmute'): void;
   getBoundingRect(): DOMRect;
+  onDropped(): void;
 }
+type SectionContainerConstructor = {
+  //아무 것도 전달 받지 않은 생성자
+  new (): SectionContainer;
+  // 생성자는 아무것도 받지않지만 호출되면 SectionContainer라는 규격을 따라가는 어떤 class라도 ok
+};
 
 export class PageItemComponent
   extends BaseComponent<HTMLElement>
@@ -57,16 +63,24 @@ export class PageItemComponent
   onDragStart(_: DragEvent) {
     this.notifyDragObservers('start');
     //ClientX, Y좌표 확인 가능
+    this.element.classList.add('lifted');
   }
   onDragEnd(_: DragEvent) {
     this.notifyDragObservers('stop');
+    this.element.classList.remove('lifted');
   }
   onDragEnter(_: DragEvent) {
     this.notifyDragObservers('enter');
     //ClientX, Y좌표 확인 가능
+    this.element.classList.add('drop-area');
   }
+
   onDragLeave(_: DragEvent) {
     this.notifyDragObservers('leave');
+    this.element.classList.remove('drop-area');
+  }
+  onDropped() {
+    this.element.classList.remove('drop-area');
   }
   notifyDragObservers(state: DragState) {
     // 유지보수때문에 함수로 관리
@@ -81,7 +95,7 @@ export class PageItemComponent
   setOnCloseListener(listener: OnCloseListener) {
     this.closeListener = listener;
   }
-  setOnDragStateListner(listener: OnDragStateListener<PageItemComponent>) {
+  setOnDragStateListener(listener: OnDragStateListener<PageItemComponent>) {
     // 나 드래그 되고 있어 !
     // 나, 드래그 상태
     this.dragStateListener = listener;
@@ -99,11 +113,6 @@ export class PageItemComponent
 }
 //* --- //
 
-type SectionContainerConstructor = {
-  //아무 것도 전달 받지 않은 생성자
-  new (): SectionContainer;
-  // 생성자는 아무것도 받지않지만 호출되면 SectionContainer라는 규격을 따라가는 어떤 class라도 ok
-};
 export class PageComponent
   extends BaseComponent<HTMLUListElement>
   implements Composable
@@ -141,26 +150,25 @@ export class PageComponent
   }
   onDrop(event: DragEvent) {
     event.preventDefault();
-    console.log('onDrop');
     // 위치 변경
     if (!this.dropTarget) {
       return;
     }
     if (this.dragTarget && this.dragTarget !== this.dropTarget) {
       const dropY = event.clientY;
-      const srcElement = this.dragTarget.getBoundingRect;
+      const srcElement = this.dragTarget.getBoundingRect();
 
       this.dragTarget.removeFrom(this.element);
-      //this.element == 페이지
       this.dropTarget.attach(
         this.dragTarget,
         dropY < srcElement.y ? 'beforebegin' : 'afterend'
       );
     }
+    this.dropTarget.onDropped();
   }
 
   addChild(section: Component) {
-    const item = new PageItemComponent(); // item 생성
+    const item = new this.pageItemConstructor(); // item 생성
     // Page를 계속 새로 만드는데 재사용 가능하려면?
     item.addChild(section);
     item.attachTo(this.element, 'beforeend');
@@ -171,26 +179,28 @@ export class PageComponent
     this.children.add(item);
     // 들어오는 섹션이 뭔지 잘 모르지만 무조건 페이지 아이템을 만들어서 전달받은 섹션을 추가해서 받은 다음에 페이지 아이템을 페이지에 넣는다
 
-    item.setOnDragStateListner((target: SectionContainer, state: DragState) => {
-      switch (state) {
-        case 'start':
-          this.dragTarget = target;
-          this.updateSections('mute');
-          break;
-        case 'stop':
-          this.dragTarget = undefined;
-          this.updateSections('unmute');
-          break;
-        case 'enter':
-          this.dropTarget = target;
-          break;
-        case 'leave':
-          this.dropTarget = undefined;
-          break;
-        default:
-          throw new Error(`유효하지 않은 상태${state}`);
+    item.setOnDragStateListener(
+      (target: SectionContainer, state: DragState) => {
+        switch (state) {
+          case 'start':
+            this.dragTarget = target;
+            this.updateSections('mute');
+            break;
+          case 'stop':
+            this.dragTarget = undefined;
+            this.updateSections('unmute');
+            break;
+          case 'enter':
+            this.dropTarget = target;
+            break;
+          case 'leave':
+            this.dropTarget = undefined;
+            break;
+          default:
+            throw new Error(`유효하지 않은 상태${state}`);
+        }
       }
-    });
+    );
   }
   private updateSections(state: 'mute' | 'unmute') {
     this.children.forEach((section: SectionContainer) => {
