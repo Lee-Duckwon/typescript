@@ -25,7 +25,9 @@ type SectionContainerConstructor = {
   new (): SectionContainer;
   // 생성자는 아무것도 받지않지만 호출되면 SectionContainer라는 규격을 따라가는 어떤 class라도 ok
 };
-
+// ! ------------------  ! //
+@EnableDragging
+@EnableHover
 export class PageItemComponent
   extends BaseComponent<HTMLElement>
   implements SectionContainer
@@ -47,18 +49,18 @@ export class PageItemComponent
     };
     //? button 클릭이 되면 해당 페이지 아이템 컴포넌트 삭제
 
-    this.element.addEventListener('dragstart', (event: DragEvent) => {
-      this.onDragStart(event);
-    });
-    this.element.addEventListener('dragend', (event: DragEvent) => {
-      this.onDragEnd(event);
-    });
-    this.element.addEventListener('dragenter', (event: DragEvent) => {
-      this.onDragEnter(event);
-    });
-    this.element.addEventListener('dragleave', (event: DragEvent) => {
-      this.onDragLeave(event);
-    });
+    // this.element.addEventListener('dragstart', (event: DragEvent) => {
+    //   this.onDragStart(event);
+    // });
+    // this.element.addEventListener('dragend', (event: DragEvent) => {
+    //   this.onDragEnd(event);
+    // });
+    // this.element.addEventListener('dragenter', (event: DragEvent) => {
+    //   this.onDragEnter(event);
+    // });
+    // this.element.addEventListener('dragleave', (event: DragEvent) => {
+    //   this.onDragLeave(event);
+    // });
   }
   onDragStart(_: DragEvent) {
     this.notifyDragObservers('start');
@@ -113,6 +115,7 @@ export class PageItemComponent
 }
 //* --- //
 
+@EnableDrop
 export class PageComponent
   extends BaseComponent<HTMLUListElement>
   implements Composable
@@ -133,23 +136,17 @@ export class PageComponent
     this.element.textContent = 'This is PageComponent'; // 말그대로 textContent */
 
     super('<ul class="page"></ul>');
-    this.element.addEventListener('dragover', (event: DragEvent) => {
-      this.onDragOver(event);
-    });
-    this.element.addEventListener('drop', (event: DragEvent) => {
-      this.onDrop(event);
-    });
+    //생성자에서는 원하는 것을 만드는 로직만 신경
   }
 
   onDragOver(event: DragEvent) {
-    event.preventDefault();
+    //event.preventDefault();
     // 드랍존 정의할 때 preventDefault해줘야 한다.
     // DragOver 와 Drop을 핸들링할때 안 해주면 touchEvent나 포인터 이벤트에서 안 좋은 결과를 발생할 수도 있어
     // 이런 것을 보면 지금 구현하는 드래그 앤 드랍은 안 좋은 api
-    console.log('onDragOver');
+    //console.log('onDragOver');
   }
   onDrop(event: DragEvent) {
-    event.preventDefault();
     // 위치 변경
     if (!this.dropTarget) {
       return;
