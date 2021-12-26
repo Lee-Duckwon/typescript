@@ -1,10 +1,11 @@
-import { Draggable, Droppable, Hoverable } from '../components/common/type';
+import { Draggable, Droppable, Hoverable } from '../components/common/type.js';
 import { Component } from './../components/component';
 
 type GConstructor<T = {}> = new (...args: any[]) => T;
 type DraggableClass = GConstructor<Component & Draggable>;
 
 export function EnableDragging<TBase extends DraggableClass>(Base: TBase) {
+  //DraggableClass은 컴포넌트이면서 드래거블한 타입
   return class DraggableItem extends Base {
     constructor(...args: any[]) {
       super(...args);
