@@ -1,4 +1,11 @@
 import { BaseComponent, Component } from './../component.js';
+import { Hoverable, Droppable } from './../common/type';
+import {
+  EnableDragging,
+  EnableDrop,
+  EnableHover
+} from '../../decorators/draggable.js';
+import { Draggable } from '../common/type.js';
 
 export interface Composable {
   // 여러가지 모아서 조립하고 묶을 수 있는
@@ -12,7 +19,7 @@ type OnDragStateListener<T extends Component> = (
   state: DragState
 ) => void; // 타입이 안전하지만 타입이 보존되는 제네릭
 
-interface SectionContainer extends Component, Composable {
+interface SectionContainer extends Component, Composable, Draggable, Hoverable {
   setOnCloseListener(listener: OnCloseListener): void;
   // setOnCloseListener api가 있어야함!
   setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
