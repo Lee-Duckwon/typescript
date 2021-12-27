@@ -1,4 +1,4 @@
-import { Draggable, Droppable, Hoverable } from '../components/common/type.js';
+import { Draggable, Droppable, Hoverable } from '../components/common/type';
 import { Component } from './../components/component';
 
 type GConstructor<T = {}> = new (...args: any[]) => T;
