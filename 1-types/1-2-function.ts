@@ -58,3 +58,12 @@
   console.log(addNumbers(1, 2, 3, 4));
   console.log(addNumbers(1, 2, 3, 4, 5, 0));
 }
+
+function hello(name?: string) {
+  // optional 팔수
+  return `hello ${name || 'world'}`;
+}
+
+const result = hello();
+const result2 = hello('Sam');
+const result3 = hello(/* 숫자 금지 */);
