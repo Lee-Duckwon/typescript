@@ -37,3 +37,35 @@
     }
   }
 }
+
+type Job = 'police' | 'developer' | 'teacher';
+
+interface User {
+  name: string;
+  job: Job;
+}
+
+const user: User = {
+  name: 'Sam',
+  job: 'developer'
+};
+
+interface Car {
+  name: 'car';
+  color: string;
+  start(): void;
+}
+interface Mobile {
+  name: 'mobile';
+  color: string;
+  call(): void;
+}
+
+function getFigt(gift: Car | Mobile) {
+  console.log(gift.color);
+  if (gift.name === 'car') {
+    gift.start();
+  } else {
+    gift.call();
+  }
+}

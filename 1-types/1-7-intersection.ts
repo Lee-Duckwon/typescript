@@ -1,8 +1,8 @@
 {
   // union은 발생할 수 있는 아이들 모두
   // intersection은 모든 것을 다 합한
-  // union은 or
-  // intersection은 and
+  //* union은 or
+  //* intersection은 and
 
   // 다양한 타입들을 하나로 묶어서 선언할 수 있다.
   type Student = {
